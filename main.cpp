@@ -4,7 +4,8 @@
 
 // my implementation of a c-string stack
 #include "string_stack.hpp"
-
+// some functions for using my string-stack
+#include "utils.h"
 
 int main(){
 
@@ -18,7 +19,7 @@ int main(){
 	std::cin.width(255);
 
 	
-	while (true) {
+	for (;;) {
 
 		// prompt the user for a command
 		std::cout <<"STACK -> % ";
@@ -48,7 +49,8 @@ int main(){
 		// reset everything
 		} else if (strcmp(command, "reset") == 0)
 			stack.clear();
-	
+		
+		// change the top element
 		else if (strcmp(command, "chtop") == 0) {
 			if (stack.top()) {
 				char value[256];
@@ -57,6 +59,8 @@ int main(){
 			} else
 				std::cout <<"The stack is Empty...\n";
 
+		} else if (strcmp(command, "list") == 0) {
+			printStrStack(stack);
 
 		// close the program
 		} else if (*command == 'q' || strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0)
