@@ -26,9 +26,12 @@ int main(){
 		std::cin >>command;
 		
 
+
 		// delete the top element off of the stack
 		if (strcmp(command, "pop") == 0)
 			stack.pop();
+
+
 
 		// print the top element of the stack
 		else if (strcmp(command, "top") == 0) {
@@ -39,6 +42,8 @@ int main(){
 				std::cout <<"The stack is Empty...\n";
 			else
 				std::cout <<top <<std::endl;
+
+
 
 		// add a string to the stack
 		} else if (strcmp(command, "push") == 0) {
@@ -51,7 +56,7 @@ int main(){
 			stack.clear();
 		
 		// change the top element
-		else if (strcmp(command, "chtop") == 0) {
+		else if (strcmp(command, "chtop") == 0)
 			if (stack.top()) {
 				char value[256];
 				std::cin.getline(value, 255);
@@ -59,18 +64,19 @@ int main(){
 			} else
 				std::cout <<"The stack is Empty...\n";
 
-		} else if (strcmp(command, "list") == 0) {
+		// show the contents of the stack
+		else if (strcmp(command, "list") == 0 || strcmp(command, "ls") == 0)
 			printStrStack(stack);
 
-		// close the program
-		} else if (*command == 'q' || strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0)
+		// quit the program
+		else if (*command == 'q' || strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0)
 			return 0;
 			
-		// user is a dumbass (to be assumed at this point...)
+		// user is a dumbass (should be assumed at this point...)
 		else
-			std::cerr <<"\aCommand `" <<command <<"` not found..." <<std::endl;
+			std::cerr <<"\aCommand `" <<command <<"` not found..." <<"accepted commands:"
+						" top, pop, push, reset, chtop, ls/list, exit/q/quit" <<std::endl;
 
 	}
 
 }
-
