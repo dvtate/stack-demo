@@ -2,7 +2,6 @@
 #define STRING_STACK_H
 
 #include <stdlib.h>
-#include <string.h>
 #include <inttypes.h>
 
 
