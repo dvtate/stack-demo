@@ -77,7 +77,7 @@ int main(){
 		// user is a dumbass (should be assumed at this point...)
 		else
 			std::cerr <<"\aCommand `" <<command <<"` not found..." <<"accepted commands:"
-						" top, pop, push, reset, chtop, ls/list, exit/q/quit" <<std::endl;
+						" top, size, pop, push, reset, chtop, ls/list, exit/q/quit" <<std::endl;
 		
 		std::cout <<"Size: " <<stack.stackDepth <<std::endl <<"sizeFactor: " <<(int) stack.sizeFactor <<std::endl;
 
