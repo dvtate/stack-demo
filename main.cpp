@@ -44,11 +44,11 @@ int main(){
 				std::cout <<top <<std::endl;
 
 
-		} else if (strcmp(command, "size") == 0)
+		} else if (strcmp(command, "size") == 0) {
+			
 			std::cout <<stack.stackDepth <<std::endl;
-
 		// add a string to the stack
-		else if (strcmp(command, "push") == 0) {
+		} else if (strcmp(command, "push") == 0) {
 			char value[256];
 			std::cin.getline(value, 255);
 			stack.push(value + 1); // first char is a space
@@ -77,7 +77,11 @@ int main(){
 		// user is a dumbass (should be assumed at this point...)
 		else
 			std::cerr <<"\aCommand `" <<command <<"` not found..." <<"accepted commands:"
-						" top, size, pop, push, reset, chtop, ls/list, exit/q/quit" <<std::endl;
+						" top, pop, push, reset, chtop, ls/list, exit/q/quit" <<std::endl;
+		
+		std::cout <<"Size: " <<stack.stackDepth <<std::endl <<"sizeFactor: " <<(int) stack.sizeFactor <<std::endl;
+
+
 	}
 
 }

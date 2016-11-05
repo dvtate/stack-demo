@@ -25,7 +25,7 @@ public:
 
   	~StrStack(){
 
-		for ( ; stackDepth > 0; stackDepth--)
+		for (; stackDepth > 0; stackDepth--)
 			free(*(buffer--));
 
 		free(buffer);

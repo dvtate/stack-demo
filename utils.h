@@ -11,7 +11,6 @@ void printStrStack(const StrStack& stack){
 	for (size_t i = 0; i < stack.stackDepth; i++)
 		std::cout <<i <<": " <<*(--buff) <<std::endl;
 
-
 }
 
 
