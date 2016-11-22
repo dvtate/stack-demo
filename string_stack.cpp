@@ -21,12 +21,12 @@ void StrStack::grow(){
 
   	// don't copy the contents of an empty buffer
 	if (stackDepth == 0)
-		buffer = (char**) realloc(buffer, ((1 << ++sizeFactor) * 256) * sizeof(char*));
+		stackHead = buffer = (char**) realloc(buffer, ((1 << ++sizeFactor) * 256) * sizeof(char*));
 
 	else {
 
 	  	// make a new buffer twice as big as the old one
-		char** buffer2 = (char**) malloc(((1 << ++sizeFactor) * 256) * sizeof(char*));
+		char** buffer2 = stackHead = (char**) malloc(((1 << ++sizeFactor) * 256) * sizeof(char*));
 
 	  	// copy all the strings into their new locations
 	  	for (size_t i = 0; i < stackDepth; i++)
@@ -35,7 +35,7 @@ void StrStack::grow(){
 	  	free(stackHead);
 
 	  	// replace buffer with buffer2
-	  	stackHead = buffer = buffer2;
+	  	buffer = buffer2;
 
 	}
 

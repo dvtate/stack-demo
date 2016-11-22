@@ -79,7 +79,8 @@ int main(){
 			std::cerr <<"\aCommand `" <<command <<"` not found..." <<"accepted commands:"
 						" top, size, pop, push, reset, chtop, ls/list, exit/q/quit" <<std::endl;
 		
-		std::cout <<"Size: " <<stack.stackDepth <<std::endl <<"sizeFactor: " <<(int) stack.sizeFactor <<std::endl;
+		std::cout <<"Size: " <<stack.stackDepth <<std::endl <<"sizeFactor: " <<(int) stack.sizeFactor
+				  <<"\nspaces allocated: " <<((1U <<stack.sizeFactor) * 256) <<std::endl;
 
 
 	}
