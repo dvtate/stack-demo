@@ -5,12 +5,17 @@
 #include "string_stack.hpp"
 
 
-void printStrStack(const StrStack stack){
+void printStrStack(const StrStack& stack){
 
 	char** buff = stack.buffer;
-	for (size_t i = 0; i < stack.stackDepth; i++)
-		std::cout <<i <<": " <<*(--buff) <<std::endl;
+	size_t sd = stack.stackDepth;
+	
 
+	int num = 0;
+
+	while (buff-- > stack.stackHead)
+		std::cout <<num++ <<": " <<*(buff) <<std::endl;
+	
 }
 
 
