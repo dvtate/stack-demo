@@ -1,3 +1,8 @@
 language: cpp
 sudo: false
-install: g++ *.cpp -Wall -Wextra -o stack-demo
+
+compiler:
+  - gcc
+  - clang
+  
+script: g++ *.cpp -Wall -Wextra -o stack-demo
