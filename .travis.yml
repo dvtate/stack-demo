@@ -1,0 +1,3 @@
+language: cpp
+sudo: false
+install: g++ *.cpp -Wall -Wextra -o stack-demo
