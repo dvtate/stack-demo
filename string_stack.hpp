@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <string.h>
-#include <iostream>
+
+class CalcValue;
+class UserVar;
 
 class StrStack {
 
@@ -23,7 +25,7 @@ public:
                 buffer((char**) malloc(256 * sizeof(char*))),
                 stackDepth(0),
                 stackHead(buffer)
-        { }
+        { *buffer = NULL; }
 
         StrStack(const StrStack& cpy):
                 sizeFactor(cpy.sizeFactor),
@@ -31,6 +33,7 @@ public:
                 stackDepth(cpy.stackDepth),
                 stackHead(buffer)
         {
+        		*buffer = NULL;
                 char** sh = cpy.stackHead;
                 while (sh != cpy.buffer) {
                         *buffer = (char*) malloc ( strlen(*sh) + 1 );
@@ -40,12 +43,26 @@ public:
         }
 
         ~StrStack(){
-                // plz don't ask me why this works... 'cause idfk
                 for (; stackDepth > 0; stackDepth--)
                         free(*(--buffer));
 
-                free(buffer);
+                free(stackHead);
         }
+
+		StrStack& operator=(const StrStack& cpy){
+			sizeFactor = cpy.sizeFactor;
+			buffer = (char**) malloc((1 << cpy.sizeFactor) * 256 * sizeof(char*));
+			stackDepth = cpy.stackDepth;
+			stackHead = buffer;
+
+			char** sh = cpy.stackHead;
+            while (sh != cpy.buffer) {
+				*buffer = (char*) malloc ( strlen(*sh) + 1 );
+				strcpy(*buffer++, *sh++);
+            }
+
+            return *this;
+		}
 
         // resets the object
         void clear();
@@ -72,21 +89,9 @@ public:
                 { return changeTop(str);}
 
 
-        StrStack& operator=(const StrStack cpy){
-                sizeFactor = cpy.sizeFactor;
-                buffer = (char**) malloc((1 << cpy.sizeFactor) * 256 * sizeof(char*));
-                stackDepth = cpy.stackDepth;
-                stackHead = buffer;
 
-                char** sh = cpy.stackHead;
-                while (sh != cpy.buffer) {
-                        *buffer = (char*) malloc ( strlen(*sh) + 1 );
-                        strcpy(*buffer++, *sh++);
-                }
-
-                return *this;
-        }
 
 };
+
 
 #endif
