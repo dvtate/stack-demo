@@ -1,97 +1,145 @@
 #ifndef STRING_STACK_H
 #define STRING_STACK_H
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
 #include <string.h>
-
-class CalcValue;
-class UserVar;
+#include <math.h>
 
 class StrStack {
 
 public:
-        // how many times to double the number of lines
-        uint8_t sizeFactor;
+	// how many times to double the number of lines
+	uint8_t sizeFactor;
 
-        char** buffer;
-        size_t stackDepth;
+	// points to element above top of stack
+	char** buffer;
+	// number of elements in the stack
+	size_t stackDepth;
 
-        char** stackHead;
+	// the first elements in the stack
+	char** stackHead;
 
 
-        StrStack():
-                sizeFactor(0),
-                buffer((char**) malloc(256 * sizeof(char*))),
-                stackDepth(0),
-                stackHead(buffer)
-        { *buffer = NULL; }
+	StrStack():
+		sizeFactor(0),
+		buffer((char**) malloc(256 * sizeof(char*))),
+		stackDepth(0),
+		stackHead(buffer)
+	{
+		*buffer = NULL;
+	}
 
-        StrStack(const StrStack& cpy):
-                sizeFactor(cpy.sizeFactor),
-                buffer((char**) malloc((1 << cpy.sizeFactor) * 256 * sizeof(char*))),
-                stackDepth(cpy.stackDepth),
-                stackHead(buffer)
-        {
-        		*buffer = NULL;
-                char** sh = cpy.stackHead;
-                while (sh != cpy.buffer) {
-                        *buffer = (char*) malloc ( strlen(*sh) + 1 );
-                        strcpy(*buffer++, *sh++);
-                }
-
-        }
-
-        ~StrStack(){
-                for (; stackDepth > 0; stackDepth--)
-                        free(*(--buffer));
-
-                free(stackHead);
-        }
-
-		StrStack& operator=(const StrStack& cpy){
-			sizeFactor = cpy.sizeFactor;
-			buffer = (char**) malloc((1 << cpy.sizeFactor) * 256 * sizeof(char*));
-			stackDepth = cpy.stackDepth;
-			stackHead = buffer;
-
-			char** sh = cpy.stackHead;
-            while (sh != cpy.buffer) {
-				*buffer = (char*) malloc ( strlen(*sh) + 1 );
-				strcpy(*buffer++, *sh++);
-            }
-
-            return *this;
+	// copy constructor
+	StrStack(const StrStack& cpy):
+		sizeFactor(cpy.sizeFactor),
+		buffer((char**) malloc((1 << cpy.sizeFactor) * 256 * sizeof(char*))),
+		stackDepth(cpy.stackDepth),
+		stackHead(buffer)
+	{
+		*buffer = NULL;
+		char** sh = cpy.stackHead;
+		while (sh != cpy.buffer) {
+			*buffer = (char*) malloc ( strlen(*sh) + 1 );
+			strcpy(*buffer++, *sh++);
 		}
 
-        // resets the object
-        void clear();
+	}
 
-        // doubles the size of the buffer
-        void grow();
+	~StrStack(){
+		for (; stackDepth > 0; stackDepth--)
+			free(*(--buffer));
 
-        // pushes a line to the top of the stack
-        void push(const char* str);
+		free(stackHead);
+	}
 
-        // deletes the string at the top of the stack.
-        void pop();
+	// copy
+	StrStack& operator=(const StrStack& cpy){
+		sizeFactor = cpy.sizeFactor;
+		buffer = (char**) malloc((1 << cpy.sizeFactor) * 256 * sizeof(char*));
+		stackDepth = cpy.stackDepth;
+		stackHead = buffer;
 
-        // the string at the top of the stack
-        /// be sure to copy it before calling pop()
-        char* top()
-                { return stackDepth ? *(buffer - 1) : NULL; }
+		char** sh = cpy.stackHead;
+		while (sh != cpy.buffer) {
+			*buffer = (char*) malloc ( strlen(*sh) + 1 );
+			strcpy(*buffer++, *sh++);
+		}
 
-        size_t& size()
-                { return stackDepth; }
+		return *this;
+	}
 
-        void changeTop(const char* str);
-        void top(const char* str)
-                { return changeTop(str);}
+	// 0 = bottom of stack
+	char* operator[](const ssize_t index) {
+		if ((size_t)abs(index) >= stackDepth)
+			throw "StrStack[] index out of bounds";
 
+		return index >= 0 ? *(stackHead + index) : *(buffer + index - 1);	
+	}
 
+	// deletes all strings
+	void clear();
 
+	/// doubles the size of the buffer
+	void grow();
 
+	/// pushes a line to the top of the stack
+	void push(const char* str);
+
+	/// deletes the string at the top of the stack.
+	void pop();
+
+	/// the string at the top of the stack
+	char* top()
+		{ return stackDepth ? *(buffer - 1) : NULL; }
+
+	/// the number of strings being stored
+	size_t size()
+		{ return stackDepth; }
+
+	// modify the top element
+	void changeTop(const char* str);
+	void top(const char* str)
+		{ return changeTop(str);}
+
+	/// the number of characters in all the strings stored in the stack
+	size_t totalLength(){
+		char** buff = buffer;
+
+		// start with one to count the '\0' char at the end
+		size_t ret = 1;
+
+		while (buff-- > stackHead)
+			ret += strlen(*buff);
+
+		return ret;
+
+	}
+
+	// converts the block to a string
+	void toString(char** dest, size_t* size);
+
+	/// prints the contents of a string stack
+	static inline void printStrStack(const StrStack& stack){
+		// start from top element (this one is empty)
+		char** buff = stack.buffer;
+
+		int num = 0;
+		// skip the first element (empty) and print the rest of the stack
+		while (buff-- > stack.stackHead)
+			printf("%d: %s\n", num++, *buff);
+
+	}
+
+	/// concatenates 2 stacks together
+	static inline void appendToStack(StrStack& out, const StrStack& in){
+		// bottom of stack1 -> top of stack1 -> bottom of stack2 -> top of stack2
+		char** head = in.stackHead;
+		out.push(*(head));
+		while (head++ < in.buffer)
+			out.push(*head);
+	}
 };
-
 
 #endif
