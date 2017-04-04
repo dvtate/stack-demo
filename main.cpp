@@ -4,8 +4,7 @@
 
 // my implementation of a c-string stack
 #include "string_stack.hpp"
-// some functions for using my string-stack
-#include "utils.h"
+
 
 int main(){
 
@@ -22,7 +21,7 @@ int main(){
 	for (;;) {
 
 		// prompt the user for a command
-		std::cout <<"STACK -> % ";
+		std::cout <<"\x1b[1mSTACK -> \x1b[5m% \x1b[0m";
 		std::cin >>command;
 		
 
@@ -66,9 +65,17 @@ int main(){
 			} else
 				std::cout <<"The stack is Empty...\n";
 
+		else if (strcmp(command, "at") == 0) {
+			ssize_t index;
+			std::cin >>index;
+			try {
+				std::cout <<stack[index] <<std::endl;
+			} catch (const char* err) {
+				std::cout <<"\a\x1b[31;1mError:\x1b[0m\x1B[1m index of [" <<index <<"] is out of bounds\x1b[0m\n";
+			}
 		// show the contents of the stack
-		else if (strcmp(command, "list") == 0 || strcmp(command, "ls") == 0)
-			printStrStack(stack);
+		} else if (strcmp(command, "list") == 0 || strcmp(command, "ls") == 0)
+			StrStack::printStrStack(stack);
 
 		// quit the program
 		else if (*command == 'q' || strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0)
@@ -77,7 +84,7 @@ int main(){
 		// user is a dumbass (should be assumed at this point...)
 		else
 			std::cerr <<"\aCommand `" <<command <<"` not found..." <<"accepted commands:"
-						" top, size, pop, push, reset, chtop, ls/list, exit/q/quit" <<std::endl;
+						" top, size, pop, push, at, reset, chtop, ls/list, exit/q/quit" <<std::endl;
 		
 		std::cout <<"Size: " <<stack.stackDepth <<std::endl <<"sizeFactor: " <<(int) stack.sizeFactor
 				  <<"\nspaces allocated: " <<((1U <<stack.sizeFactor) * 256) <<std::endl;
