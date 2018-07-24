@@ -65,6 +65,7 @@ int main(){
 			} else
 				std::cout <<"The stack is Empty...\n";
 
+		// access element at specific index
 		else if (strcmp(command, "at") == 0) {
 			ssize_t index;
 			std::cin >>index;
@@ -73,6 +74,7 @@ int main(){
 			} catch (const char* err) {
 				std::cout <<"\a\x1b[31;1mError:\x1b[0m\x1B[1m index of [" <<index <<"] is out of bounds\x1b[0m\n";
 			}
+
 		// show the contents of the stack
 		} else if (strcmp(command, "list") == 0 || strcmp(command, "ls") == 0)
 			StrStack::printStrStack(stack);

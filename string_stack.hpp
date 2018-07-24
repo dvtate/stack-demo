@@ -3,9 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
 #include <string.h>
-#include <math.h>
+#include <inttypes.h>
+
 
 class StrStack {
 
@@ -23,25 +23,25 @@ public:
 
 
 	StrStack():
-		sizeFactor(0),
-		buffer((char**) malloc(256 * sizeof(char*))),
-		stackDepth(0),
-		stackHead(buffer)
+			sizeFactor(0),
+			buffer((char**) calloc(256, sizeof(char*))),
+			stackDepth(0),
+			stackHead(buffer)
 	{
 		*buffer = NULL;
 	}
 
 	// copy constructor
 	StrStack(const StrStack& cpy):
-		sizeFactor(cpy.sizeFactor),
-		buffer((char**) malloc((1 << cpy.sizeFactor) * 256 * sizeof(char*))),
-		stackDepth(cpy.stackDepth),
-		stackHead(buffer)
+			sizeFactor(cpy.sizeFactor),
+			buffer((char**) calloc((1 << cpy.sizeFactor) * 256, sizeof(char*))),
+			stackDepth(cpy.stackDepth),
+			stackHead(buffer)
 	{
 		*buffer = NULL;
 		char** sh = cpy.stackHead;
 		while (sh != cpy.buffer) {
-			*buffer = (char*) malloc ( strlen(*sh) + 1 );
+			*buffer = (char*) calloc ( strlen(*sh) + 1, sizeof(char) );
 			strcpy(*buffer++, *sh++);
 		}
 
@@ -71,11 +71,14 @@ public:
 	}
 
 	// 0 = bottom of stack
-	char* operator[](const ssize_t index) {
+	char* at(const ssize_t index) {
 		if ((size_t)abs(index) >= stackDepth)
 			throw "StrStack[] index out of bounds";
 
-		return index >= 0 ? *(stackHead + index) : *(buffer + index - 1);	
+		return index >= 0 ? *(stackHead + index) : *(buffer + index - 1);
+	}
+	char* operator[](const ssize_t index) {
+		return at(index);
 	}
 
 	// deletes all strings
@@ -92,16 +95,16 @@ public:
 
 	/// the string at the top of the stack
 	char* top()
-		{ return stackDepth ? *(buffer - 1) : NULL; }
+	{ return stackDepth ? *(buffer - 1) : NULL; }
 
 	/// the number of strings being stored
 	size_t size()
-		{ return stackDepth; }
+	{ return stackDepth; }
 
 	// modify the top element
 	void changeTop(const char* str);
 	void top(const char* str)
-		{ return changeTop(str);}
+	{ return changeTop(str);}
 
 	/// the number of characters in all the strings stored in the stack
 	size_t totalLength(){
@@ -111,7 +114,7 @@ public:
 		size_t ret = 1;
 
 		while (buff-- > stackHead)
-			ret += strlen(*buff);
+			ret += strlen(*buff) + 2;
 
 		return ret;
 
@@ -120,26 +123,27 @@ public:
 	// converts the block to a string
 	void toString(char** dest, size_t* size);
 
-	/// prints the contents of a string stack
+	// prints the contents of a string stack
 	static inline void printStrStack(const StrStack& stack){
 		// start from top element (this one is empty)
 		char** buff = stack.buffer;
 
-		int num = 0;
+		unsigned num = 0;
 		// skip the first element (empty) and print the rest of the stack
 		while (buff-- > stack.stackHead)
 			printf("%d: %s\n", num++, *buff);
 
 	}
 
-	/// concatenates 2 stacks together
+	// concatenates 2 stacks together
 	static inline void appendToStack(StrStack& out, const StrStack& in){
 		// bottom of stack1 -> top of stack1 -> bottom of stack2 -> top of stack2
 		char** head = in.stackHead;
-		out.push(*(head));
+		out.push(*head);
 		while (head++ < in.buffer)
 			out.push(*head);
 	}
+
 };
 
 #endif

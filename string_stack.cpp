@@ -1,8 +1,7 @@
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-
 #include "string_stack.hpp"
+
+#include <stdio.h>
+#include <string.h>
 
 
 // resets the object to it's original state
@@ -54,7 +53,8 @@ void StrStack::push(const char* str){
 	if (!str)
 		return;
 
-	*buffer = (char*) malloc(strlen(str) + 1);
+
+	*buffer = (char*) malloc(strlen(str) + 2);
 
 	// write the string to the buffer
 	strcpy(*buffer, str);
@@ -102,7 +102,9 @@ void StrStack::toString(char** dest, size_t* space){
 
 	// reallocate memory to fit data
 	*space = totalLength();
-	*dest = (char*) realloc((void*) *dest, *space);
+	free(*dest);
+	*dest = (char*) malloc(*space);
+	//*dest = (char*) realloc((void*) *dest, *space);
 	//memset(*dest, '-', *space);
 	// begin copying in data
 	char** buff = stackHead; // start from bottom of stack
@@ -119,4 +121,5 @@ void StrStack::toString(char** dest, size_t* space){
 	} while (++buff < buffer);
 
 }
+
 
