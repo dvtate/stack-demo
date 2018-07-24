@@ -79,8 +79,20 @@ int main(){
 		} else if (strcmp(command, "list") == 0 || strcmp(command, "ls") == 0)
 			StrStack::printStrStack(stack);
 
+		else if (strcmp(command, "edit") == 0) {
+			ssize_t index;
+			std::cin >>index;
+			char value[256];
+			std::cin.getline(value, 255);
+
+			try {
+				stack.edit(index, value + 1);
+			} catch (const char* err) {
+				std::cout <<"\a\x1b[31;1mError:\x1b[0m\x1B[1m index of [" <<index <<"] is out of bounds\x1b[0m\n";
+			}
+
 		// quit the program
-		else if (*command == 'q' || strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0)
+		} else if (*command == 'q' || strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0)
 			return 0;
 			
 		// user is a dumbass (should be assumed at this point...)

@@ -71,14 +71,22 @@ public:
 	}
 
 	// 0 = bottom of stack
-	char* at(const ssize_t index) {
+	char*& at(const ssize_t index) {
 		if ((size_t)abs(index) >= stackDepth)
 			throw "StrStack[] index out of bounds";
 
 		return index >= 0 ? *(stackHead + index) : *(buffer + index - 1);
 	}
-	char* operator[](const ssize_t index) {
+	char*& operator[](const ssize_t index) {
 		return at(index);
+	}
+	
+	void edit(size_t index, const char* value) {
+		
+		char*& ref = at(index);
+		ref = (char*) realloc(ref, strlen(value) + 1);
+		strcpy(ref, value);
+
 	}
 
 	// deletes all strings
